@@ -27,7 +27,8 @@ namespace ReadYourHeartOut.Controllers
             //ViewData["Count"] = Count + 1;
             ViewData["Message"] = $"Welcome to our awesome Site, you visited the site at: {DateTime.Now.ToLongTimeString()}";
             Message = $"Welcome to our awesome Site, you visited the site at: {DateTime.Now.ToLongTimeString()}";
-            logger.LogInformation("Message displayed: {Message}", Message);
+            logger.LogDebug("Message displayed: {Message}", Message);
+            //logger.LogError("Error displayed: {ErrorMessage}", ErrorMessage);
             return View();
         }
 
