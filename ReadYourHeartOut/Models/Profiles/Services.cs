@@ -7,10 +7,10 @@ namespace ReadYourHeartOut.Models.Profiles
 {
     public class Service
     {
-        public int ServicesID { get; set; }
+        public int ServiceID { get; set; }
         public string ServiceName { get; set; }
         public double Cost { get; set; }
 
-        public ICollection<User> Users { get; set; }
+        public User Users { get; set; }
     }
 }

@@ -34,9 +34,9 @@ namespace ReadYourHeartOut.Data
 
             var services = new Service[]
             {
-                new Service{ServicesID=1000,ServiceName="Grammateket", Cost=29.99},
-                new Service{ServicesID=1001,ServiceName="MatematikLegFlex", Cost=49.99},
-                new Service{ServicesID=1002,ServiceName="IntoWords", Cost=99.99}
+                new Service{ServiceID=1000,ServiceName="Grammateket", Cost=29.99},
+                new Service{ServiceID=1001,ServiceName="MatematikLegFlex", Cost=49.99},
+                new Service{ServiceID=1002,ServiceName="IntoWords", Cost=99.99}
             };
 
             foreach (Service service in services)
