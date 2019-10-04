@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ReadYourHeartOut.Data;
 using ReadYourHeartOut.Models.Profiles;
+using System.Web;
+
 
 namespace ReadYourHeartOut.Controllers
 {
@@ -23,26 +25,25 @@ namespace ReadYourHeartOut.Controllers
             _context = context;
             this.logger = logger;
         }
-       
+
         // GET: Users
         public async Task<IActionResult> Index()
         {
             
-            //var View = new ViewContext();
             try
             {
+                //throw new Exception();
                 return View(await _context.Users.ToListAsync());
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                ExceptionContext filterContext = null;
-                OnException(filterContext);
+                logger.LogError("Message display: {}", ex);
             }
-            finally
-            {
-                return View;
-            }
+
+            return RedirectToAction("Home", "Privacy");
         }
+
+
 
         // GET: Users/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -170,7 +171,7 @@ namespace ReadYourHeartOut.Controllers
         }
 
         //Methode for exceptionhandling fra UserController
-        protected  Task<IActionResult> OnException(ExceptionContext exceptionContext)
+        protected  void OnException(ExceptionContext exceptionContext)
         {
             //hermed siger vi at denne exception ikke længere er unhandled
             exceptionContext.ExceptionHandled = true;
@@ -179,7 +180,7 @@ namespace ReadYourHeartOut.Controllers
             logger.LogError($"Error Displayed: {exceptionContext}");
 
             //hermed viser vi hvad der ellers skal vise, hvis der er en exception på denne page
-            return exceptionContext.Result = RedirectToAction("Index", "Pricavy");
+            exceptionContext.Result = RedirectToAction("Index", "Pricavy");
 
         }
     }
