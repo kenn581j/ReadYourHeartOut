@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReadYourHeartOut.Models.Profiles;
-using ReadYourHeartOut.Models;
 
 namespace ReadYourHeartOut.Data
 {
@@ -11,6 +10,5 @@ namespace ReadYourHeartOut.Data
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Service> Services { get; set; }
-        public DbSet<ReadYourHeartOut.Models.Error> Error { get; set; }
     }
 }
