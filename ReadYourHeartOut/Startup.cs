@@ -56,7 +56,8 @@ namespace ReadYourHeartOut
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+
+                app.UseStatusCodePagesWithRedirects("/Error/{0}");
                 app.UseHsts();
             }
 
