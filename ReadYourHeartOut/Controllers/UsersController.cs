@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ReadYourHeartOut.Data;
 using ReadYourHeartOut.Models.Profiles;
 
@@ -13,16 +16,32 @@ namespace ReadYourHeartOut.Controllers
     public class UsersController : Controller
     {
         private readonly UserContext _context;
+        private readonly ILogger logger;
 
-        public UsersController(UserContext context)
+        public UsersController(UserContext context, ILogger<UsersController> logger)
         {
             _context = context;
+            this.logger = logger;
         }
-
+       
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Users.ToListAsync());
+            
+            //var View = new ViewContext();
+            try
+            {
+                return View(await _context.Users.ToListAsync());
+            }
+            catch (Exception e)
+            {
+                ExceptionContext filterContext = null;
+                OnException(filterContext);
+            }
+            finally
+            {
+                return View;
+            }
         }
 
         // GET: Users/Details/5
@@ -148,6 +167,20 @@ namespace ReadYourHeartOut.Controllers
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.ID == id);
+        }
+
+        //Methode for exceptionhandling fra UserController
+        protected  Task<IActionResult> OnException(ExceptionContext exceptionContext)
+        {
+            //hermed siger vi at denne exception ikke længere er unhandled
+            exceptionContext.ExceptionHandled = true;
+
+            //logger selve exception context
+            logger.LogError($"Error Displayed: {exceptionContext}");
+
+            //hermed viser vi hvad der ellers skal vise, hvis der er en exception på denne page
+            return exceptionContext.Result = RedirectToAction("Index", "Pricavy");
+
         }
     }
 }
