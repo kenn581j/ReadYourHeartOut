@@ -27,18 +27,7 @@ namespace ReadYourHeartOut.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            
-            try
-            {
-                //throw new Exception();
-                return View(await _context.Users.ToListAsync());
-            }
-            catch (Exception ex)
-            {
-                logger.LogError("Message display: {}", ex);
-            }
-
-            return RedirectToAction("Home", "Privacy");
+            return View(await _context.Users.ToListAsync());
         }
 
 
