@@ -56,7 +56,9 @@ namespace ReadYourHeartOut
             }
             else
             {
-
+                //For at have en global exceptionhandler
+                //hermed bliver beskeden sendt videre til en anden route, hvis der kommer en exception
+                app.UseExceptionHandler("/Error");
                 app.UseStatusCodePagesWithRedirects("/Error/{0}");
                 app.UseHsts();
             }

@@ -180,7 +180,7 @@ namespace ReadYourHeartOut.Controllers
             logger.LogError($"Error Displayed: {exceptionContext}");
 
             //hermed viser vi hvad der ellers skal vise, hvis der er en exception på denne page
-            exceptionContext.Result = RedirectToAction("Index", "Pricavy");
+            exceptionContext.Result = RedirectToAction("Index", "Privacy");
 
         }
     }
