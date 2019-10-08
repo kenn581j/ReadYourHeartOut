@@ -18,12 +18,10 @@ namespace ReadYourHeartOut.Controllers
     public class UsersController : Controller
     {
         private readonly UserContext _context;
-        private readonly ILogger logger;
 
-        public UsersController(UserContext context, ILogger<UsersController> logger)
+        public UsersController(UserContext context)
         {
             _context = context;
-            this.logger = logger;
         }
 
         // GET: Users
