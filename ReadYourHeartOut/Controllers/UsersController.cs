@@ -169,19 +169,5 @@ namespace ReadYourHeartOut.Controllers
         {
             return _context.Users.Any(e => e.ID == id);
         }
-
-        //Methode for exceptionhandling fra UserController
-        protected  void OnException(ExceptionContext exceptionContext)
-        {
-            //hermed siger vi at denne exception ikke længere er unhandled
-            exceptionContext.ExceptionHandled = true;
-
-            //logger selve exception context
-            logger.LogError($"Error Displayed: {exceptionContext}");
-
-            //hermed viser vi hvad der ellers skal vise, hvis der er en exception på denne page
-            exceptionContext.Result = RedirectToAction("Index", "Privacy");
-
-        }
     }
 }
