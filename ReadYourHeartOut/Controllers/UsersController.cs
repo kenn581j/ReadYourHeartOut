@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ReadYourHeartOut.Data;
 using ReadYourHeartOut.Models.Profiles;
+using System.Web;
+
 
 namespace ReadYourHeartOut.Controllers
 {
@@ -24,6 +29,8 @@ namespace ReadYourHeartOut.Controllers
         {
             return View(await _context.Users.ToListAsync());
         }
+
+
 
         // GET: Users/Details/5
         public async Task<IActionResult> Details(int? id)
