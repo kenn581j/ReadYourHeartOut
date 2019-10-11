@@ -34,6 +34,8 @@ namespace ReadYourHeartOut.Controllers
             }
 
             var user = await _context.Users
+                .Include(i => i.Services)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (user == null)
             {
@@ -86,34 +88,73 @@ namespace ReadYourHeartOut.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,UserName,Email,JoinDate")] User user)
+        public async Task<IActionResult> Edit(int? id,  byte[] rowVersion)
         {
-            if (id != user.ID)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var userToUpdate = await _context.Users.Include(i => i.Services).FirstOrDefaultAsync(m => m.ID == id);
+
+            if (userToUpdate == null)
+            {
+                User deletedUser = new User();
+                await TryUpdateModelAsync(deletedUser);
+                ModelState.AddModelError(string.Empty, "Unable to save changes. The user was deleted by another user.");
+                ViewData["ServiceID"] = new SelectList(_context.Services, "ID", "Name", deletedUser.ID);
+                return View(deletedUser);
+            }
+
+            _context.Entry(userToUpdate).Property("RowVersion").OriginalValue = rowVersion;
+
+            if (await TryUpdateModelAsync<User>(userToUpdate, "", s => s.UserName, s => s.Email))
             {
                 try
                 {
-                    _context.Update(user);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    if (!UserExists(user.ID))
+
+                    var exceptionEntry = ex.Entries.Single();
+                    var clientValues = (User)exceptionEntry.Entity;
+                    var databaseEntry = exceptionEntry.GetDatabaseValues();
+                    if (databaseEntry == null)
                     {
-                        return NotFound();
+                        ModelState.AddModelError(string.Empty, "Fuck you");
+
                     }
                     else
                     {
-                        throw;
+                        var databaseValues = (User)databaseEntry.ToObject();
+
+                        if (databaseValues.UserName != clientValues.UserName)
+                        {
+                            ModelState.AddModelError("UserName", $"Current value: {databaseValues.UserName}");
+                        }
+                        if (databaseValues.Email != clientValues.Email)
+                        {
+                            ModelState.AddModelError("Email", $"Current value: {databaseValues.Email:c}");
+                        }
+                        if (databaseValues.JoinDate != clientValues.JoinDate)
+                        {
+                            ModelState.AddModelError("JoinDate", $"Current value: {databaseValues.JoinDate:d}");
+                        }
+                        
+
+                        ModelState.AddModelError(string.Empty, "The record you attempted to edit "
+                                + "was modified by another user after you got the original value. The "
+                                + "edit operation was canceled and the current values in the database "
+                                + "have been displayed. If you still want to edit this record, click "
+                                + "the Save button again. Otherwise click the Back to List hyperlink.");
+                        userToUpdate.RowVersion = (byte[])databaseValues.RowVersion;
+                        ModelState.Remove("RowVersion");
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(user);
+            return View(userToUpdate);
         }
 
         // GET: Users/Delete/5

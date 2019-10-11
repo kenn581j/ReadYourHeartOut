@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReadYourHeartOut.Models.Profiles;
 
+
 namespace ReadYourHeartOut.Data
 {
     public class UserContext : DbContext
