@@ -24,7 +24,7 @@ namespace ReadYourHeartOut
                 try
                 {
                     var context = services.GetRequiredService<UserContext>();
-                    DbInitializer.Initialize(context);
+                   DbInitializer.Initialize(context);
                 }
                 catch (Exception ex)
                 {

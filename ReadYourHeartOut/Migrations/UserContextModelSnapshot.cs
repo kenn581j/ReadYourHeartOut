@@ -33,18 +33,27 @@ namespace ReadYourHeartOut.Migrations
 
                     b.Property<string>("ServiceName");
 
-                    b.Property<int?>("UsersID");
-
                     b.HasKey("ServiceID");
 
-                    b.HasIndex("UsersID");
+                    b.ToTable("Service");
+                });
 
-                    b.ToTable("Services");
+            modelBuilder.Entity("ReadYourHeartOut.Models.Profiles.ServiceAssignment", b =>
+                {
+                    b.Property<int>("UserID");
+
+                    b.Property<int>("ServiceID");
+
+                    b.HasKey("UserID", "ServiceID");
+
+                    b.HasIndex("ServiceID");
+
+                    b.ToTable("ServiceAssignment");
                 });
 
             modelBuilder.Entity("ReadYourHeartOut.Models.Profiles.User", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("UserID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -58,16 +67,22 @@ namespace ReadYourHeartOut.Migrations
 
                     b.Property<string>("UserName");
 
-                    b.HasKey("ID");
+                    b.HasKey("UserID");
 
-                    b.ToTable("Users");
+                    b.ToTable("User");
                 });
 
-            modelBuilder.Entity("ReadYourHeartOut.Models.Profiles.Service", b =>
+            modelBuilder.Entity("ReadYourHeartOut.Models.Profiles.ServiceAssignment", b =>
                 {
-                    b.HasOne("ReadYourHeartOut.Models.Profiles.User", "Users")
-                        .WithMany("Services")
-                        .HasForeignKey("UsersID");
+                    b.HasOne("ReadYourHeartOut.Models.Profiles.Service", "Service")
+                        .WithMany("ServiceAssignments")
+                        .HasForeignKey("ServiceID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ReadYourHeartOut.Models.Profiles.User", "User")
+                        .WithMany("ServicesAssignment")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
