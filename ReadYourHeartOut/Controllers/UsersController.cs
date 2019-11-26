@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using ReadYourHeartOut.Data;
 using ReadYourHeartOut.Models.Profiles;
 using System.Web;
-
+using ReadYourHeartOut.Utilities;
 
 namespace ReadYourHeartOut.Controllers
 {
@@ -22,6 +22,12 @@ namespace ReadYourHeartOut.Controllers
         public UsersController(UserContext context)
         {
             _context = context;
+            if (_context == null)
+            {
+                GetUserDataFromAPI getUserDataFromAPI = new GetUserDataFromAPI();
+                _context.AddRange(getUserDataFromAPI.GetUserData());
+                _context.SaveChanges();
+            }
         }
 
         // GET: Users
