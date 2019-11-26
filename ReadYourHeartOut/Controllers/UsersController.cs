@@ -22,7 +22,7 @@ namespace ReadYourHeartOut.Controllers
         public UsersController(UserContext context)
         {
             _context = context;
-            if (_context == null)
+            if (_context.Users.Count() >= 0)
             {
                 GetUserDataFromAPI getUserDataFromAPI = new GetUserDataFromAPI();
                 _context.AddRange(getUserDataFromAPI.GetUserData());
