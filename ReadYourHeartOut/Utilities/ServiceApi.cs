@@ -71,7 +71,7 @@ namespace ReadYourHeartOut.Utilities
             return response;
         }
 
-        private string DeleteServiceData(int id)
+        public string DeleteServiceData(int id)
         {
             string result;
             DeleteServiceDataLink = DeleteServiceDataLink + "/" + id;

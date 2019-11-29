@@ -14,7 +14,7 @@ namespace ReadYourHeartOut.Controllers
     public class ServicesController : Controller
     {
         private readonly UserContext _context;
-        private ServiceApi apiHelper;
+        private ServiceApi apiHelper = new ServiceApi();
 
         public ServicesController(UserContext context)
         {
@@ -154,6 +154,7 @@ namespace ReadYourHeartOut.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var service = await _context.Services.FindAsync(id);
+            string result = apiHelper.DeleteServiceData(id);
             _context.Services.Remove(service);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
