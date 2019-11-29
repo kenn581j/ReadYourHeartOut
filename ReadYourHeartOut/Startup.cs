@@ -35,7 +35,7 @@ namespace ReadYourHeartOut
             });
 
             services.AddDbContext<UserContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseInMemoryDatabase("ReadYourHeartOutDB"));
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<UserContext>();
 
