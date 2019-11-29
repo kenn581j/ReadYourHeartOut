@@ -47,12 +47,12 @@ namespace ReadYourHeartOut.Utilities
 
             //kald af metoden der poster som får både uri og content som parameter og 
             //som får statuscode tilbage som string
-            string response = UpLoadServiceData(uri, content).ToString();
+            string response = UpLoadServiceDataPost(uri, content).ToString();
 
             return response;
         }
 
-        private async Task<string> UpLoadServiceData(Uri uri, HttpContent content)
+        private async Task<string> UpLoadServiceDataPost(Uri uri, HttpContent content)
         {
             string response = string.Empty;
 
@@ -85,6 +85,42 @@ namespace ReadYourHeartOut.Utilities
                 result = reader.ReadToEnd();
             }
             return result;
+        }
+
+        private string PutServiceData(int id, Service service)
+        {
+            if(id != service.ServiceID)
+            {
+                throw new IndexOutOfRangeException();
+            }
+            string result = string.Empty;
+            string payLoad = JsonConvert.SerializeObject(service);
+
+            Uri uri = new Uri(PutServiceDataLink + "/" + id);
+
+            HttpContent content = new StringContent(payLoad, Encoding.UTF8, "application/json");
+            result = UpLoadServiceDataPut(uri, content).ToString();
+
+            return result;
+        }
+
+        private async Task<string> UpLoadServiceDataPut(Uri uri, HttpContent content)
+        {
+            string response = string.Empty;
+
+            using (HttpClient c = new HttpClient())
+            {
+                HttpResponseMessage result = await c.PutAsync(uri, content);
+
+                //check if statuscode is successfull, hvis ja bliver det gemt i response
+                //hvis ikke er den bare tom, kan så tjekkes i controlleren med et try catch
+                if (result.IsSuccessStatusCode)
+                {
+                    response = result.StatusCode.ToString();
+                }
+            }
+
+            return response;
         }
     }
 }
