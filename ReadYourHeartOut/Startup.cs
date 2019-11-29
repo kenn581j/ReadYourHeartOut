@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using ReadYourHeartOut.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ReadYourHeartOut.Controllers;
 
 namespace ReadYourHeartOut
 {
@@ -20,6 +21,7 @@ namespace ReadYourHeartOut
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            APIController.InitializeClient();
         }
 
         public IConfiguration Configuration { get; }

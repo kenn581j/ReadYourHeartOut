@@ -12,6 +12,8 @@ using ReadYourHeartOut.Data;
 using ReadYourHeartOut.Models.Profiles;
 using System.Web;
 using ReadYourHeartOut.Utilities;
+using System.Net.Http;
+using ReadYourHeartOut.Models;
 
 namespace ReadYourHeartOut.Controllers
 {
@@ -200,8 +202,33 @@ namespace ReadYourHeartOut.Controllers
         }
 
         private bool UserExists(int id)
-        {
+        { 
             return _context.Users.Any(e => e.UserID == id);
+        }
+
+
+
+
+
+
+        //Trial and error
+        public async Task<UserIndexData> GetData(string actionRequired)
+        {
+            string url = APIController.apiClient.BaseAddress + actionRequired;
+
+            using (HttpResponseMessage response = await APIController.apiClient.GetAsync(url))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    UserIndexData recievedData = await response.Content.ReadAsAsync<UserIndexData>();
+                    return recievedData;
+                }
+                else
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
+            }
+
         }
     }
 }
