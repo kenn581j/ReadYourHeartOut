@@ -24,9 +24,10 @@ namespace ReadYourHeartOut.Controllers
             _context = context;
             if (_context.Users.Count() >= 0)
             {
-                GetUserDataFromAPI getUserDataFromAPI = new GetUserDataFromAPI();
+                GetDataFromApi getUserDataFromAPI = new GetDataFromApi();
                 _context.AddRange(getUserDataFromAPI.GetUserData());
                 _context.SaveChanges();
+                _context.Users.AsNoTracking();
             }
         }
 

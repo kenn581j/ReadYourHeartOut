@@ -7,16 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ReadYourHeartOut.Data;
 using ReadYourHeartOut.Models.Profiles;
+using ReadYourHeartOut.Utilities;
 
 namespace ReadYourHeartOut.Controllers
 {
     public class ServicesController : Controller
     {
         private readonly UserContext _context;
+        private GetDataFromApi apiHelper;
 
         public ServicesController(UserContext context)
         {
             _context = context;
+
+            if(!_context.Services.Any())
+            {
+                apiHelper = new GetDataFromApi();
+                _context.AddRangeAsync(apiHelper.GetServiceData());
+                _context.SaveChangesAsync();
+            }
         }
 
         // GET: Services
