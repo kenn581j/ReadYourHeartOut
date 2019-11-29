@@ -21,6 +21,7 @@ namespace ReadYourHeartOut.Controllers
     {
         private readonly UserContext _context;
 
+        //metode skal implementeres så der ikke forekommer double entries af en unik entry. MANGLER
         public UsersController(UserContext context)
         {
             _context = context;
