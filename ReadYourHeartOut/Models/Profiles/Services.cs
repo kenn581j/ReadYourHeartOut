@@ -13,6 +13,6 @@ namespace ReadYourHeartOut.Models.Profiles
         public double Cost { get; set; }
         [Timestamp]
         public byte[] RowVersion { get; set; }
-        public User Users { get; set; }
+        public ICollection<ServiceAssignment> ServiceAssignments { get; set; }
     }
 }

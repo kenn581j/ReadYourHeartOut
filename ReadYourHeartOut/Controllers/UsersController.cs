@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using ReadYourHeartOut.Data;
 using ReadYourHeartOut.Models.Profiles;
 using System.Web;
-
+using ReadYourHeartOut.Utilities;
 
 namespace ReadYourHeartOut.Controllers
 {
@@ -22,6 +22,12 @@ namespace ReadYourHeartOut.Controllers
         public UsersController(UserContext context)
         {
             _context = context;
+            if (_context.Users.Count() >= 0)
+            {
+                GetUserDataFromAPI getUserDataFromAPI = new GetUserDataFromAPI();
+                _context.AddRange(getUserDataFromAPI.GetUserData());
+                _context.SaveChanges();
+            }
         }
 
         // GET: Users
@@ -41,9 +47,9 @@ namespace ReadYourHeartOut.Controllers
             }
 
             var user = await _context.Users
-                .Include(i => i.Services)
+                .Include(i => i.ServicesAssignment)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.UserID == id);
             if (user == null)
             {
                 return NotFound();
@@ -102,14 +108,14 @@ namespace ReadYourHeartOut.Controllers
                 return NotFound();
             }
 
-            var userToUpdate = await _context.Users.Include(i => i.Services).FirstOrDefaultAsync(m => m.ID == id);
+            var userToUpdate = await _context.Users.Include(i => i.ServicesAssignment).FirstOrDefaultAsync(m => m.UserID == id);
 
             if (userToUpdate == null)
             {
                 User deletedUser = new User();
                 await TryUpdateModelAsync(deletedUser);
                 ModelState.AddModelError(string.Empty, "Unable to save changes. The user was deleted by another user.");
-                ViewData["ServiceID"] = new SelectList(_context.Services, "ID", "Name", deletedUser.ID);
+                ViewData["ServiceID"] = new SelectList(_context.Services, "ID", "Name", deletedUser.UserID);
                 return View(deletedUser);
             }
 
@@ -173,7 +179,7 @@ namespace ReadYourHeartOut.Controllers
             }
 
             var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.UserID == id);
             if (user == null)
             {
                 return NotFound();
@@ -195,7 +201,7 @@ namespace ReadYourHeartOut.Controllers
 
         private bool UserExists(int id)
         {
-            return _context.Users.Any(e => e.ID == id);
+            return _context.Users.Any(e => e.UserID == id);
         }
     }
 }

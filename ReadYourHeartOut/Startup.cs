@@ -34,14 +34,10 @@ namespace ReadYourHeartOut
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-
             services.AddDbContext<UserContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseInMemoryDatabase("ReadYourHeartOutDB"));
+            services.AddDefaultIdentity<IdentityUser>()
+                .AddEntityFrameworkStores<UserContext>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
