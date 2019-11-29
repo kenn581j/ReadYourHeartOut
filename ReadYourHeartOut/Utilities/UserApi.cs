@@ -10,10 +10,11 @@ using System.Threading.Tasks;
 
 namespace ReadYourHeartOut.Utilities
 {
-    public class GetDataFromApi
+    public class UserApi
     {
         private string GetUserDataLink = "https://localhost:44382/api/Users";
-        private string GetServiceDataLink = "https://localhost:44382/api/Services";
+
+
 
 
         public List<User> GetUserData()
@@ -32,22 +33,7 @@ namespace ReadYourHeartOut.Utilities
             return users;
         }
 
-        public List<Service> GetServiceData()
-        {
-            List<Service> services = new List<Service>();
-            string json = "";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(GetServiceDataLink);
-            request.Method = "GET";
 
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
-            {
-                json = reader.ReadToEnd();
-            }
-            services = JsonConvert.DeserializeObject<List<Service>>(json);
-
-            return services;
-        }
 
 
     }

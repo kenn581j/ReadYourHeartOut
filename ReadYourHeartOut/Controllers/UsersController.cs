@@ -18,15 +18,16 @@ namespace ReadYourHeartOut.Controllers
     public class UsersController : Controller
     {
         private readonly UserContext _context;
+        private UserApi getUserDataFromAPI;
 
         public UsersController(UserContext context)
         {
             _context = context;
-            if (_context.Users.Count() >= 0)
+            if (_context.Users.Count() == 0)
             {
-                GetDataFromApi getUserDataFromAPI = new GetDataFromApi();
-                _context.AddRange(getUserDataFromAPI.GetUserData());
-                _context.SaveChanges();
+                getUserDataFromAPI = new UserApi();
+                _context.AddRangeAsync(getUserDataFromAPI.GetUserData());
+                _context.SaveChangesAsync();
                 _context.Users.AsNoTracking();
             }
         }

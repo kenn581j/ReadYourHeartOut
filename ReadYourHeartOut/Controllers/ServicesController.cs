@@ -14,15 +14,15 @@ namespace ReadYourHeartOut.Controllers
     public class ServicesController : Controller
     {
         private readonly UserContext _context;
-        private GetDataFromApi apiHelper;
+        private ServiceApi apiHelper;
 
         public ServicesController(UserContext context)
         {
             _context = context;
 
-            if(!_context.Services.Any())
+            if(_context.Services.Count() == 0)
             {
-                apiHelper = new GetDataFromApi();
+                apiHelper = new ServiceApi();
                 _context.AddRangeAsync(apiHelper.GetServiceData());
                 _context.SaveChangesAsync();
             }
@@ -65,10 +65,15 @@ namespace ReadYourHeartOut.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ServiceID,ServiceName,Cost,RowVersion")] Service service)
         {
+            service.ServiceID = _context.Services.Count();
             if (ModelState.IsValid)
             {
+                //forbliver det samme, da man jo meget gerne  
+                //stadigvæk vil se en ændring i det man laver 
                 _context.Add(service);
                 await _context.SaveChangesAsync();
+                //kald til api med payload af en ny service
+                string result = apiHelper.PostServiceData(service);
                 return RedirectToAction(nameof(Index));
             }
             return View(service);
