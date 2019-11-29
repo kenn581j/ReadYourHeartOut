@@ -24,12 +24,27 @@ namespace ReadYourHeartOut.Controllers
         public UsersController(UserContext context)
         {
             _context = context;
+            _context.ChangeTracker.AutoDetectChangesEnabled = false;
             if (_context.Users.Count() >= 0)
             {
-                GetUserDataFromAPI getUserDataFromAPI = new GetUserDataFromAPI();
-                _context.AddRange(getUserDataFromAPI.GetUserData());
+                _context.AddRange(CompareAdd());
                 _context.SaveChanges();
             }
+        }
+
+        public List<User> CompareAdd()
+        {
+            List<User> UsersToReturn = new List<User>();
+            GetUserDataFromAPI getUserDataFromAPI = new GetUserDataFromAPI();
+            foreach (User user in getUserDataFromAPI.GetUserData())
+            {
+            if (!_context.Users.ToList().Contains(user))
+                {
+                    UsersToReturn.Add(user);
+                }
+
+            }
+            return UsersToReturn;
         }
 
         // GET: Users
