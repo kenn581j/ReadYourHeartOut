@@ -65,7 +65,7 @@ namespace ReadYourHeartOut.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ServiceID,ServiceName,Cost,RowVersion")] Service service)
         {
-            service.ServiceID = _context.Services.Count();
+            service.ServiceID = _context.Services.Count() + 1;
             if (ModelState.IsValid)
             {
                 //forbliver det samme, da man jo meget gerne  
