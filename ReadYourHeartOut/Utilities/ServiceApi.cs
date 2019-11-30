@@ -87,7 +87,7 @@ namespace ReadYourHeartOut.Utilities
             return result;
         }
 
-        private string PutServiceData(int id, Service service)
+        public string PutServiceData(int id, Service service)
         {
             if(id != service.ServiceID)
             {

@@ -112,6 +112,7 @@ namespace ReadYourHeartOut.Controllers
                 try
                 {
                     _context.Update(service);
+                    apiHelper.PutServiceData(id, service);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
