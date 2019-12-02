@@ -7,16 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ReadYourHeartOut.Data;
 using ReadYourHeartOut.Models.Profiles;
+using ReadYourHeartOut.Utilities;
 
 namespace ReadYourHeartOut.Controllers
 {
     public class ServicesController : Controller
     {
         private readonly UserContext _context;
+        private ServiceApi apiHelper = new ServiceApi();
 
         public ServicesController(UserContext context)
         {
             _context = context;
+
+            if(_context.Services.Count() == 0)
+            {
+                apiHelper = new ServiceApi();
+                _context.AddRangeAsync(apiHelper.GetServiceData());
+                _context.SaveChangesAsync();
+            }
         }
 
         // GET: Services
@@ -56,10 +65,15 @@ namespace ReadYourHeartOut.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ServiceID,ServiceName,Cost,RowVersion")] Service service)
         {
+            service.ServiceID = _context.Services.Count() + 1;
             if (ModelState.IsValid)
             {
+                //forbliver det samme, da man jo meget gerne  
+                //stadigvæk vil se en ændring i det man laver 
                 _context.Add(service);
                 await _context.SaveChangesAsync();
+                //kald til api med payload af en ny service
+                string result = apiHelper.PostServiceData(service);
                 return RedirectToAction(nameof(Index));
             }
             return View(service);
@@ -98,6 +112,7 @@ namespace ReadYourHeartOut.Controllers
                 try
                 {
                     _context.Update(service);
+                    apiHelper.PutServiceData(id, service);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -140,6 +155,7 @@ namespace ReadYourHeartOut.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var service = await _context.Services.FindAsync(id);
+            string result = apiHelper.DeleteServiceData(id);
             _context.Services.Remove(service);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
