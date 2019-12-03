@@ -21,7 +21,7 @@ namespace ReadYourHeartOut
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            APIController.InitializeClient();
+            //APIController.InitializeClient();
         }
 
         public IConfiguration Configuration { get; }

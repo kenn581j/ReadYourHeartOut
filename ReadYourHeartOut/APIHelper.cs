@@ -5,11 +5,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace ReadYourHeartOut.Controllers
+namespace ReadYourHeartOut
 {
-    public static class APIController
+    public class APIHelper
     {
-        public static HttpClient apiClient { get; set;  }
+        public static HttpClient apiClient { get; set; }
 
 
         public static void InitializeClient()

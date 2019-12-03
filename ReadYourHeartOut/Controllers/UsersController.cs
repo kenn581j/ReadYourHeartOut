@@ -21,12 +21,11 @@ namespace ReadYourHeartOut.Controllers
     {
         private readonly UserContext _context;
 
-        //metode skal implementeres så der ikke forekommer double entries af en unik entry. MANGLER
         public UsersController(UserContext context)
         {
             _context = context;
             _context.ChangeTracker.AutoDetectChangesEnabled = false;
-            if (_context.Users.Count() >= 0)
+            if (_context.Users.Count() == 0)
             {
                 _context.AddRange(CompareAdd());
                 _context.SaveChanges();
@@ -217,10 +216,7 @@ namespace ReadYourHeartOut.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserExists(int id)
-        { 
-            return _context.Users.Any(e => e.UserID == id);
-        }
+     
 
 
 
@@ -228,23 +224,23 @@ namespace ReadYourHeartOut.Controllers
 
 
         //Trial and error
-        public async Task<UserIndexData> GetData(string actionRequired)
-        {
-            string url = APIController.apiClient.BaseAddress + actionRequired;
+        //public async Task<UserIndexData> GetData(string actionRequired)
+        //{
+        //    string url = APIController.apiClient.BaseAddress + actionRequired;
 
-            using (HttpResponseMessage response = await APIController.apiClient.GetAsync(url))
-            {
-                if (response.IsSuccessStatusCode)
-                {
-                    UserIndexData recievedData = await response.Content.ReadAsAsync<UserIndexData>();
-                    return recievedData;
-                }
-                else
-                {
-                    throw new Exception(response.ReasonPhrase);
-                }
-            }
+        //    using (HttpResponseMessage response = await APIController.apiClient.GetAsync(url))
+        //    {
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            UserIndexData recievedData = await response.Content.ReadAsAsync<UserIndexData>();
+        //            return recievedData;
+        //        }
+        //        else
+        //        {
+        //            throw new Exception(response.ReasonPhrase);
+        //        }
+        //    }
 
-        }
+        //}
     }
 }

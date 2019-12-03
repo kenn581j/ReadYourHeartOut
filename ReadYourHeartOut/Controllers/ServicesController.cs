@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +25,19 @@ namespace ReadYourHeartOut.Controllers
         // GET: Services
         public async Task<IActionResult> Index()
         {
+            string url = String.Format("https://localhost:44382/api/");
+            WebRequest requestObject = WebRequest.Create(url);
+            HttpWebResponse responseObject = null;
+            responseObject = (HttpWebResponse)requestObject.GetResponse();
+
+            string recievedData = null;
+            using (Stream stream = responseObject.GetResponseStream())
+            {
+                StreamReader streamReader = new StreamReader(stream);
+                recievedData = streamReader.ReadToEnd();
+                streamReader.Close();
+            }
+
             return View(await _context.Services.ToListAsync());
         }
 
@@ -56,13 +72,38 @@ namespace ReadYourHeartOut.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ServiceID,ServiceName,Cost,RowVersion")] Service service)
         {
-            if (ModelState.IsValid)
+            string url = String.Format("https://localhost:44382/api/Services");
+            WebRequest requestPostObject = WebRequest.Create(url);
+            requestPostObject.ContentType ="application/json";
+
+            using (StreamWriter streamWriter = new StreamWriter(requestPostObject.GetRequestStream()))
             {
-                _context.Add(service);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(service);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(service);
+
+
+
+
+                //HttpWebResponse httpResponse = (HttpWebResponse)requestPostObject.GetResponse();
+
+                //using (Stream stream = httpResponse.GetResponseStream())
+                //{
+                //    StreamReader streamReader = new StreamReader(stream);
+                //}
+
+                //if (ModelState.IsValid)
+                //{  
+                //    _context.Add(service);
+                //    await _context.SaveChangesAsync();
+                //    return RedirectToAction(nameof(Index));
+                //}
+                //return View(service);
             }
-            return View(service);
         }
 
         // GET: Services/Edit/5

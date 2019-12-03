@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using ReadYourHeartOut.Models.Profiles;
 
 namespace ReadYourHeartOut.Utilities
 {
