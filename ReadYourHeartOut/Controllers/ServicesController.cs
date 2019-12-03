@@ -95,22 +95,21 @@ namespace ReadYourHeartOut.Controllers
 
 
 
+                    //HttpWebResponse httpResponse = (HttpWebResponse)requestPostObject.GetResponse();
 
-                //HttpWebResponse httpResponse = (HttpWebResponse)requestPostObject.GetResponse();
+                    //using (Stream stream = httpResponse.GetResponseStream())
+                    //{
+                    //    StreamReader streamReader = new StreamReader(stream);
+                    //}
 
-                //using (Stream stream = httpResponse.GetResponseStream())
-                //{
-                //    StreamReader streamReader = new StreamReader(stream);
-                //}
-
-                //if (ModelState.IsValid)
-                //{  
-                //    _context.Add(service);
-                //    await _context.SaveChangesAsync();
-                //    return RedirectToAction(nameof(Index));
-                //}
-                //return View(service);
-            }
+                    //if (ModelState.IsValid)
+                    //{  
+                    //    _context.Add(service);
+                    //    await _context.SaveChangesAsync();
+                    //    return RedirectToAction(nameof(Index));
+                    //}
+                    //return View(service);
+                }
         }
 
         // GET: Services/Edit/5
