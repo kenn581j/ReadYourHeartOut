@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using ReadYourHeartOut.Data;
 using ReadYourHeartOut.Models.Profiles;
 
@@ -25,7 +26,7 @@ namespace ReadYourHeartOut.Controllers
         // GET: Services
         public async Task<IActionResult> Index()
         {
-            string url = String.Format("https://localhost:44382/api/");
+            string url = String.Format("https://localhost:44382/api/Services");
             WebRequest requestObject = WebRequest.Create(url);
             HttpWebResponse responseObject = null;
             responseObject = (HttpWebResponse)requestObject.GetResponse();
@@ -35,9 +36,13 @@ namespace ReadYourHeartOut.Controllers
             {
                 StreamReader streamReader = new StreamReader(stream);
                 recievedData = streamReader.ReadToEnd();
-                streamReader.Close();
             }
 
+            var jSonObject = JsonConvert.DeserializeObject<Service>(recievedData);
+            if (_context.Services.Count() == 0)
+            {
+                _context.Services.AddRange(jSonObject);
+            }
             return View(await _context.Services.ToListAsync());
         }
 
