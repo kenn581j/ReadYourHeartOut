@@ -40,7 +40,7 @@ namespace ReadYourHeartOut.Controllers
 
             var jSonObject = JsonConvert.DeserializeObject<Service>(recievedData);
             // ikke helt korrekt, tjekker ikke for overenstemmelser
-            if (_context.Services.Count() < jSonObject.ServiceAssignments.Count())
+            if (_context.Services.Count() == 0)
             {
                 _context.Services.AddRange(jSonObject);
             }
