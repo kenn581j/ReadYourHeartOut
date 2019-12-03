@@ -39,11 +39,13 @@ namespace ReadYourHeartOut.Controllers
             }
 
             var jSonObject = JsonConvert.DeserializeObject<Service>(recievedData);
-            if (_context.Services.Count() == 0)
+            // ikke helt korrekt, tjekker ikke for overenstemmelser
+            if (_context.Services.Count() < jSonObject.ServiceAssignments.Count())
             {
                 _context.Services.AddRange(jSonObject);
             }
-            return View(await _context.Services.ToListAsync());
+
+           return View(await _context.Services.ToListAsync());
         }
 
         // GET: Services/Details/5
