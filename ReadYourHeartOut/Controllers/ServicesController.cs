@@ -73,7 +73,7 @@ namespace ReadYourHeartOut.Controllers
                 _context.Add(service);
                 await _context.SaveChangesAsync();
                 //kald til api med payload af en ny service
-                string result = apiHelper.PostServiceData(service);
+                string result = await apiHelper.PostServiceData(service);
                 return RedirectToAction(nameof(Index));
             }
             return View(service);

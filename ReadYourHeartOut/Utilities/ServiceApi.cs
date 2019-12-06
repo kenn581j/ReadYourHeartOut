@@ -35,7 +35,7 @@ namespace ReadYourHeartOut.Utilities
             return services;
         }
 
-        public string PostServiceData(Service service)
+        public async Task<string> PostServiceData(Service service)
         {
             //laver det opject du vil poste til en json fil som er en string
             string payLoad = JsonConvert.SerializeObject(service);
@@ -47,9 +47,9 @@ namespace ReadYourHeartOut.Utilities
 
             //kald af metoden der poster som får både uri og content som parameter og 
             //som får statuscode tilbage som string
-            string response = UpLoadServiceDataPost(uri, content).ToString();
+            var response = await UpLoadServiceDataPost(uri, content);
 
-            return response;
+            return response.ToString();
         }
 
         private async Task<string> UpLoadServiceDataPost(Uri uri, HttpContent content)
