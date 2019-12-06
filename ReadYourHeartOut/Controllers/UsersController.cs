@@ -112,8 +112,7 @@ namespace ReadYourHeartOut.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("ID,UserName,Email,JoinDate")] User user)
         {
             // FUNGERER IKKE
-            //user.UserID = _context.Users.Where<User>(x => x.UserID == id).Single<User>().UserID;
-
+          
 
             if (id != user.UserID)
             {
