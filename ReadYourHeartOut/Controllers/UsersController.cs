@@ -19,6 +19,7 @@ namespace ReadYourHeartOut.Controllers
     {
         private readonly UserContext _context;
         private UserApi getUserDataFromAPI;
+        private UserApi apiHelper = new UserApi();
 
         public UsersController(UserContext context)
         {
@@ -69,21 +70,26 @@ namespace ReadYourHeartOut.Controllers
         // POST: Users/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Virker, bliver oprettet.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,UserName,Email,JoinDate")] User user)
         {
+            user.UserID = _context.Users.Count() + 1;
             if (ModelState.IsValid)
             {
                 _context.Add(user);
                 await _context.SaveChangesAsync();
+                string result = apiHelper.PostUserData(user);
                 return RedirectToAction(nameof(Index));
             }
+
             return View(user);
         }
 
-        // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+
+    // GET: Users/Edit/5
+    public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -189,13 +195,14 @@ namespace ReadYourHeartOut.Controllers
 
             return View(user);
         }
-
+        // virker
         // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var user = await _context.Users.FindAsync(id);
+            string result = apiHelper.DeleteUserData(id);
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -205,5 +212,7 @@ namespace ReadYourHeartOut.Controllers
         {
             return _context.Users.Any(e => e.UserID == id);
         }
+
+
     }
 }
