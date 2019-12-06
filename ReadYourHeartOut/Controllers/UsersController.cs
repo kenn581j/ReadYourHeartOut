@@ -109,73 +109,103 @@ namespace ReadYourHeartOut.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id,  byte[] rowVersion)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,UserName,Email,JoinDate")] User user)
         {
-            if (id == null)
+            // FUNGERER IKKE
+            //user.UserID = _context.Users.Where<User>(x => x.UserID == id).Single<User>().UserID;
+
+
+            if (id != user.UserID)
             {
                 return NotFound();
             }
-
-            var userToUpdate = await _context.Users.Include(i => i.ServicesAssignment).FirstOrDefaultAsync(m => m.UserID == id);
-
-            if (userToUpdate == null)
-            {
-                User deletedUser = new User();
-                await TryUpdateModelAsync(deletedUser);
-                ModelState.AddModelError(string.Empty, "Unable to save changes. The user was deleted by another user.");
-                ViewData["ServiceID"] = new SelectList(_context.Services, "ID", "Name", deletedUser.UserID);
-                return View(deletedUser);
-            }
-
-            _context.Entry(userToUpdate).Property("RowVersion").OriginalValue = rowVersion;
-
-            if (await TryUpdateModelAsync<User>(userToUpdate, "", s => s.UserName, s => s.Email))
+            if (ModelState.IsValid)
             {
                 try
                 {
+                    _context.Update(user);
+                    apiHelper.PutUserData(id, user);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException ex)
+                catch (DbUpdateConcurrencyException)
                 {
-
-                    var exceptionEntry = ex.Entries.Single();
-                    var clientValues = (User)exceptionEntry.Entity;
-                    var databaseEntry = exceptionEntry.GetDatabaseValues();
-                    if (databaseEntry == null)
+                    if (!UserExists(user.UserID))
                     {
-                        ModelState.AddModelError(string.Empty, "Fuck you");
-
+                        return NotFound();
                     }
                     else
                     {
-                        var databaseValues = (User)databaseEntry.ToObject();
-
-                        if (databaseValues.UserName != clientValues.UserName)
-                        {
-                            ModelState.AddModelError("UserName", $"Current value: {databaseValues.UserName}");
-                        }
-                        if (databaseValues.Email != clientValues.Email)
-                        {
-                            ModelState.AddModelError("Email", $"Current value: {databaseValues.Email:c}");
-                        }
-                        if (databaseValues.JoinDate != clientValues.JoinDate)
-                        {
-                            ModelState.AddModelError("JoinDate", $"Current value: {databaseValues.JoinDate:d}");
-                        }
-                        
-
-                        ModelState.AddModelError(string.Empty, "The record you attempted to edit "
-                                + "was modified by another user after you got the original value. The "
-                                + "edit operation was canceled and the current values in the database "
-                                + "have been displayed. If you still want to edit this record, click "
-                                + "the Save button again. Otherwise click the Back to List hyperlink.");
-                        userToUpdate.RowVersion = (byte[])databaseValues.RowVersion;
-                        ModelState.Remove("RowVersion");
+                        throw;
                     }
                 }
+                return RedirectToAction(nameof(Index));
             }
-            return View(userToUpdate);
+            return View(user);
+            //if (id == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //var userToUpdate = await _context.Users.Include(i => i.ServicesAssignment).FirstOrDefaultAsync(m => m.UserID == id);
+
+            //if (userToUpdate == null)
+            //{
+            //    User deletedUser = new User();
+            //    await TryUpdateModelAsync(deletedUser);
+            //    ModelState.AddModelError(string.Empty, "Unable to save changes. The user was deleted by another user.");
+            //    ViewData["ServiceID"] = new SelectList(_context.Services, "ID", "Name", deletedUser.UserID);
+            //    return View(deletedUser);
+            //}
+
+            //_context.Entry(userToUpdate).Property("RowVersion").OriginalValue = rowVersion;
+
+            //if (await TryUpdateModelAsync<User>(userToUpdate, "", s => s.UserName, s => s.Email))
+            //{
+            //    try
+            //    {
+            //        await _context.SaveChangesAsync();
+            //        return RedirectToAction(nameof(Index));
+            //    }
+            //    catch (DbUpdateConcurrencyException ex)
+            //    {
+
+            //        var exceptionEntry = ex.Entries.Single();
+            //        var clientValues = (User)exceptionEntry.Entity;
+            //        var databaseEntry = exceptionEntry.GetDatabaseValues();
+            //        if (databaseEntry == null)
+            //        {
+            //            ModelState.AddModelError(string.Empty, "Fuck you");
+
+            //        }
+            //        else
+            //        {
+            //            var databaseValues = (User)databaseEntry.ToObject();
+
+            //            if (databaseValues.UserName != clientValues.UserName)
+            //            {
+            //                ModelState.AddModelError("UserName", $"Current value: {databaseValues.UserName}");
+            //            }
+            //            if (databaseValues.Email != clientValues.Email)
+            //            {
+            //                ModelState.AddModelError("Email", $"Current value: {databaseValues.Email:c}");
+            //            }
+            //            if (databaseValues.JoinDate != clientValues.JoinDate)
+            //            {
+            //                ModelState.AddModelError("JoinDate", $"Current value: {databaseValues.JoinDate:d}");
+            //            }
+
+
+            //            ModelState.AddModelError(string.Empty, "The record you attempted to edit "
+            //                    + "was modified by another user after you got the original value. The "
+            //                    + "edit operation was canceled and the current values in the database "
+            //                    + "have been displayed. If you still want to edit this record, click "
+            //                    + "the Save button again. Otherwise click the Back to List hyperlink.");
+            //            userToUpdate.RowVersion = (byte[])databaseValues.RowVersion;
+            //            ModelState.Remove("RowVersion");
+            //        }
+            //    }
+            //}
+            //return View(userToUpdate);
         }
 
         // GET: Users/Delete/5
