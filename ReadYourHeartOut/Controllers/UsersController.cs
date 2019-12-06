@@ -73,14 +73,14 @@ namespace ReadYourHeartOut.Controllers
         // Virker, bliver oprettet.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,UserName,Email,JoinDate")] User user)
+        public async Task<IActionResult> Create([Bind("UserID,UserName,Email,JoinDate")] User user)
         {
             user.UserID = _context.Users.Count() + 1;
             if (ModelState.IsValid)
             {
                 _context.Add(user);
                 await _context.SaveChangesAsync();
-                string result = apiHelper.PostUserData(user);
+                string result = await apiHelper.PostUserData(user);
                 return RedirectToAction(nameof(Index));
             }
 
