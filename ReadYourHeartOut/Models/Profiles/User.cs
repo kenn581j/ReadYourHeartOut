@@ -12,7 +12,7 @@ namespace ReadYourHeartOut.Models.Profiles
         public string UserName { get; set; }
         public string Email { get; set; }
         public DateTime JoinDate { get; set; }
-
+        public byte[] RowVersion { get; set; }
         public ICollection<Service> Services { get; set; }
 
     }

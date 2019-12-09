@@ -17,6 +17,18 @@ namespace ReadYourHeartOut.Data
             {
                 return;   // DB has been seeded
             }
+            var services = new Service[]
+            {
+                new Service{ServiceID=1000,ServiceName="Grammateket", Cost=29.99},
+                new Service{ServiceID=1001,ServiceName="MatematikLegFlex", Cost=49.99},
+                new Service{ServiceID=1002,ServiceName="IntoWords", Cost=99.99}
+            };
+
+            foreach (Service service in services)
+            {
+                context.Services.Add(service);
+            }
+            context.SaveChanges();
 
             var users = new User[]
             {
@@ -32,18 +44,6 @@ namespace ReadYourHeartOut.Data
             }
             context.SaveChanges();
 
-            var services = new Service[]
-            {
-                new Service{ServiceID=1000,ServiceName="Grammateket", Cost=29.99},
-                new Service{ServiceID=1001,ServiceName="MatematikLegFlex", Cost=49.99},
-                new Service{ServiceID=1002,ServiceName="IntoWords", Cost=99.99}
-            };
-
-            foreach (Service service in services)
-            {
-                context.Services.Add(service);
-            }
-            context.SaveChanges();
 
 
         }
