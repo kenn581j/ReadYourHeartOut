@@ -70,7 +70,7 @@ namespace ReadYourHeartOut.Controllers
             {
                 //forbliver det samme, da man jo meget gerne  
                 //stadigvæk vil se en ændring i det man laver 
-                _context.Add(service);
+                _context.Services.Add(service);
                 await _context.SaveChangesAsync();
                 //kald til api med payload af en ny service
                 string result = await apiHelper.PostServiceData(service);
