@@ -62,10 +62,11 @@ namespace ReadYourHeartOut.Utilities
                 HttpResponseMessage result = await c.PostAsync(uri, content);
 
                 //check if statuscode is successfull, hvis ja bliver det gemt i response
-                //hvis ikke er den bare tom, kan så tjekkes i controlleren med et try catch
                 if (result.IsSuccessStatusCode)
                 {
-                    response = result.StatusCode.ToString();
+                    //ændret at det er content der bliver sendt tilbage
+                    //response = result.StatusCode.ToString();
+                    response = result.Content.ReadAsStringAsync().Result;
                 }
             }
 
