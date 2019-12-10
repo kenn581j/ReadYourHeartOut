@@ -67,7 +67,7 @@ namespace ReadYourHeartOut.Utilities
                 //hvis ikke er den bare tom, kan så tjekkes i controlleren med et try catch
                 if (result.IsSuccessStatusCode)
                 {
-                    response = result.StatusCode.ToString();
+                    response = result.Content.ReadAsStringAsync().Result;
                 }
             }
 
