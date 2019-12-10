@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using ReadYourHeartOut.Data;
 using ReadYourHeartOut.Models.Profiles;
 using ReadYourHeartOut.Utilities;
@@ -65,15 +66,18 @@ namespace ReadYourHeartOut.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ServiceID,ServiceName,Cost,RowVersion")] Service service)
         {
-            service.ServiceID = _context.Services.Count() + 1;
+            //den nye ide er at objektet bliver sendt til api og dens database styr identity. 
+            //post metoden fra api´en returner så kun id som vi bruger for databasen på hjemmesiden.
             if (ModelState.IsValid)
             {
-                //forbliver det samme, da man jo meget gerne  
-                //stadigvæk vil se en ændring i det man laver 
-                _context.Add(service);
+                //ændret! PostServiceData returnere json filen med det oprette service
+                string result = await apiHelper.PostServiceData(service);
+                //tager result og converter det ind i det nye service der bliver gemt med passende id
+                //i context
+                Service newService = JsonConvert.DeserializeObject<Service>(result);
+
+                _context.Services.Add(newService);
                 await _context.SaveChangesAsync();
-                //kald til api med payload af en ny service
-                string result = apiHelper.PostServiceData(service);
                 return RedirectToAction(nameof(Index));
             }
             return View(service);

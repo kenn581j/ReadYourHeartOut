@@ -35,7 +35,8 @@ namespace ReadYourHeartOut.Utilities
             return services;
         }
 
-        public string PostServiceData(Service service)
+
+        public async Task<string> PostServiceData(Service service)
         {
             //laver det opject du vil poste til en json fil som er en string
             string payLoad = JsonConvert.SerializeObject(service);
@@ -47,9 +48,9 @@ namespace ReadYourHeartOut.Utilities
 
             //kald af metoden der poster som får både uri og content som parameter og 
             //som får statuscode tilbage som string
-            string response = UpLoadServiceDataPost(uri, content).ToString();
+            var response = await UpLoadServiceDataPost(uri, content);
 
-            return response;
+            return response.ToString();
         }
 
         private async Task<string> UpLoadServiceDataPost(Uri uri, HttpContent content)
@@ -61,10 +62,11 @@ namespace ReadYourHeartOut.Utilities
                 HttpResponseMessage result = await c.PostAsync(uri, content);
 
                 //check if statuscode is successfull, hvis ja bliver det gemt i response
-                //hvis ikke er den bare tom, kan så tjekkes i controlleren med et try catch
                 if (result.IsSuccessStatusCode)
                 {
-                    response = result.StatusCode.ToString();
+                    //ændret at det er content der bliver sendt tilbage
+                    //response = result.StatusCode.ToString();
+                    response = result.Content.ReadAsStringAsync().Result;
                 }
             }
 

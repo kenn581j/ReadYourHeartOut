@@ -31,13 +31,14 @@ namespace ReadYourHeartOut.Utilities
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 using(StreamReader reader = new StreamReader(response.GetResponseStream()))
                 {
-                json = reader.ReadToEnd();
+                    json = reader.ReadToEnd();
                 }
+
             users = JsonConvert.DeserializeObject<List<User>>(json);
 
             return users;
         }
-        public string PostUserData(User user)
+        public async Task<string> PostUserData(User user)
         {
             //laver det opject du vil poste til en json fil som er en string
             string payLoad = JsonConvert.SerializeObject(user);
@@ -49,9 +50,9 @@ namespace ReadYourHeartOut.Utilities
 
             //kald af metoden der poster som får både uri og content som parameter og 
             //som får statuscode tilbage som string
-            string response = UpLoadUserDataPost(uri, content).ToString();
+            var response = await UpLoadUserDataPost(uri, content);
 
-            return response;
+            return response.ToString();
         }
 
         private async Task<string> UpLoadUserDataPost(Uri uri, HttpContent content)
@@ -66,7 +67,7 @@ namespace ReadYourHeartOut.Utilities
                 //hvis ikke er den bare tom, kan så tjekkes i controlleren med et try catch
                 if (result.IsSuccessStatusCode)
                 {
-                    response = result.StatusCode.ToString();
+                    response = result.Content.ReadAsStringAsync().Result;
                 }
             }
 

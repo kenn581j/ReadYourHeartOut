@@ -13,22 +13,23 @@ using ReadYourHeartOut.Models.Profiles;
 using System.Web;
 using ReadYourHeartOut.Utilities;
 using ReadYourHeartOut.Models;
+using Newtonsoft.Json;
 
 namespace ReadYourHeartOut.Controllers
 {
     public class UsersController : Controller
     {
         private readonly UserContext _context;
-        private UserApi getUserDataFromAPI;
-        private UserApi apiHelper = new UserApi();
+        private UserApi userApi = new UserApi();
+        private ServiceApi serviceApi = new ServiceApi();
 
         public UsersController(UserContext context)
         {
             _context = context;
             if (_context.Users.Count() == 0)
             {
-                getUserDataFromAPI = new UserApi();
-                _context.AddRangeAsync(getUserDataFromAPI.GetUserData());
+                _context.Users.AddRangeAsync(userApi.GetUserData());
+                _context.Services.AddRangeAsync(serviceApi.GetServiceData());
                 _context.SaveChangesAsync();
                 _context.Users.AsNoTracking();
             }
@@ -37,7 +38,10 @@ namespace ReadYourHeartOut.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Users.ToListAsync());
+            List<User> userWithService = await _context.Users.Include(U => U.ServicesAssignment)
+                                                                .ThenInclude(u => u.Service)
+                                                                .ToListAsync();
+            return View(/*await _context.Users.ToListAsync()*/userWithService);
         }
 
 
@@ -74,14 +78,14 @@ namespace ReadYourHeartOut.Controllers
         // Virker, bliver oprettet.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,UserName,Email,JoinDate")] User user)
+        public async Task<IActionResult> Create([Bind("UserID,UserName,Email,JoinDate")] User user)
         {
-            user.UserID = _context.Users.Count() + 1;
             if (ModelState.IsValid)
             {
-                _context.Add(user);
+                string result = await userApi.PostUserData(user);
+                User createdUser = JsonConvert.DeserializeObject<User>(result);
+                _context.Users.Add(createdUser);
                 await _context.SaveChangesAsync();
-                string result = apiHelper.PostUserData(user);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -132,7 +136,7 @@ namespace ReadYourHeartOut.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,UserName,Email,JoinDate")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("UserID,UserName,Email,JoinDate")] User user)
         {
             // FUNGERER IKKE
           
@@ -146,7 +150,7 @@ namespace ReadYourHeartOut.Controllers
                 try
                 {
                     _context.Update(user);
-                    apiHelper.PutUserData(id, user);
+                    userApi.PutUserData(id, user);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -255,7 +259,7 @@ namespace ReadYourHeartOut.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var user = await _context.Users.FindAsync(id);
-            string result = apiHelper.DeleteUserData(id);
+            string result = userApi.DeleteUserData(id);
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
