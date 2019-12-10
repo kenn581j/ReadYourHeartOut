@@ -37,7 +37,10 @@ namespace ReadYourHeartOut.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Users.ToListAsync());
+            List<User> userWithService = await _context.Users.Include(U => U.ServicesAssignment)
+                                                                .ThenInclude(u => u.Service)
+                                                                .ToListAsync();
+            return View(/*await _context.Users.ToListAsync()*/userWithService);
         }
 
 
