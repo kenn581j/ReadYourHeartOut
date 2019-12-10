@@ -1,5 +1,6 @@
 ﻿@model ReadYourHeartOut.Models.Profiles.User
 
+
 @{
     ViewData["Title"] = "Edit";
 }
@@ -32,6 +33,33 @@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <table>
+                        <tr>
+                            @{
+                                int cnt = 0;
+                                List<ReadYourHeartOut.Models.AssignedServiceData> services = ViewBag.Services;
+
+                                foreach (var service in services)
+                                {
+                                    if (cnt++ % 3 == 0)
+                                    {
+                                    @:</tr><tr>
+                                    }
+                                    @:<td>
+                                        <input type="checkbox"
+                                               name="selectedServices"
+                                               value="@service.ServiceID"
+                                               @(Html.Raw(service.Assigned ? "checked=\"checked\"" : "")) />
+                                        @service.ServiceID @:  @service.ServiceName
+                                    @:</td>
+                                }
+                            @:</tr>
+                            }
+                        </table>
+                    </div>
+                </div>
         </form>
     </div>
 </div>

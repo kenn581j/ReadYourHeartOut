@@ -12,6 +12,7 @@ using ReadYourHeartOut.Data;
 using ReadYourHeartOut.Models.Profiles;
 using System.Web;
 using ReadYourHeartOut.Utilities;
+using ReadYourHeartOut.Models;
 
 namespace ReadYourHeartOut.Controllers
 {
@@ -96,12 +97,34 @@ namespace ReadYourHeartOut.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.Include(u => u.ServicesAssignment)
+                                                          .ThenInclude(x => x.Service)
+                                                          .AsNoTracking()
+                                                          .FirstOrDefaultAsync(x => x.UserID == id);
+
             if (user == null)
             {
                 return NotFound();
             }
+            PopulateServiceAssignedData(user);
             return View(user);
+        }
+
+        private void PopulateServiceAssignedData(User user)
+        {
+            var allServices = _context.Services;
+            var userServices = new HashSet<int>(user.ServicesAssignment.Select(u => u.ServiceID));
+            var viewModel = new List<AssignedServiceData>();
+            foreach (var service in allServices)
+            {
+                viewModel.Add(new AssignedServiceData
+                {
+                    ServiceID = service.ServiceID,
+                    ServiceName = service.ServiceName,
+                    Assigned = userServices.Contains(service.ServiceID)
+                });
+            }
+            ViewData["Services"] = viewModel;
         }
 
         // POST: Users/Edit/5
@@ -139,6 +162,7 @@ namespace ReadYourHeartOut.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             return View(user);
             //if (id == null)
             //{
