@@ -18,9 +18,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Cost)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RowVersion)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -32,9 +29,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Cost)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RowVersion)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ServiceID">Edit</a> |
