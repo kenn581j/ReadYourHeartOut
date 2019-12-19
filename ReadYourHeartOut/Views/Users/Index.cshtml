@@ -12,6 +12,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th></th>
             <th>
                 @Html.DisplayNameFor(model => model.UserName)
             </th>
@@ -21,15 +22,13 @@
             <th>
                 @Html.DisplayNameFor(model => model.JoinDate)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RowVersion)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td></td>
             <td>
                 @Html.DisplayFor(modelItem => item.UserName)
             </td>
@@ -39,9 +38,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.JoinDate)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RowVersion)
-            </td>
+            
             <td>
                 <a asp-action="Edit" asp-route-id="@item.UserID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.UserID">Details</a> |
