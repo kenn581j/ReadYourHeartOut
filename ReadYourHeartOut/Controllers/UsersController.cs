@@ -14,9 +14,11 @@ using System.Web;
 using ReadYourHeartOut.Utilities;
 using ReadYourHeartOut.Models;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ReadYourHeartOut.Controllers
 {
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly UserContext _context;
