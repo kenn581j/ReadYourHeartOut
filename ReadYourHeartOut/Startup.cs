@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using ReadYourHeartOut.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ReadYourHeartOut.Utilities;
 
 namespace ReadYourHeartOut
 {
@@ -59,6 +60,7 @@ namespace ReadYourHeartOut
                 app.UseHsts();
             }
 
+            app.UseMiddlewareForTheSakeOfMiddleware();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
