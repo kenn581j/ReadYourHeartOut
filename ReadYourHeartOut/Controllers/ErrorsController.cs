@@ -13,15 +13,16 @@ namespace ReadYourHeartOut.Controllers
     {
         private readonly ILogger Logger;
 
+        // Constructor injection
         public ErrorsController(ILogger<ErrorsController> logger)
         {
             this.Logger = logger;
         }
 
-
+        // attribute routing
         [Route("Error/{StatusCode}")]
         public IActionResult ErrorHandler(int StatusCode)
-        {
+        {//bruger slet ikke vores viewmodel, som vi har lavet
             switch (StatusCode)
             {
                 case 404:

@@ -22,6 +22,10 @@ namespace IntegrationTests
         [InlineData("/Home/Contact")]
         public async Task Get_HttpRequest(string url)
         {
+            //den tester hver af de inlinedata der står foroven 
+            //og tjekker om alle links virker
+
+
             // Arrange
             var client = _factory.CreateClient();
 

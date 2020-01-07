@@ -50,7 +50,7 @@ namespace ReadYourHeartOut.Utilities
 
             //kald af metoden der poster som får både uri og content som parameter og 
             //som får statuscode tilbage som string
-            var response = await UpLoadUserDataPost(uri, content);
+            string response = await UpLoadUserDataPost(uri, content);
 
             return response.ToString();
         }
@@ -92,6 +92,7 @@ namespace ReadYourHeartOut.Utilities
         {
             if (id != user.UserID)
             {
+                //burde udnytte errorhandler
                 throw new IndexOutOfRangeException();
             }
             string result = string.Empty;

@@ -102,7 +102,8 @@ namespace ReadYourHeartOut.Controllers
             {
                 return NotFound();
             }
-
+            // Vi har brug for Include og ThenInclude for at EF(Entity Framework) ved hvilken service er forbundet
+            //med den korresponderende user
             var user = await _context.Users.Include(u => u.ServicesAssignment)
                                                           .ThenInclude(x => x.Service)
                                                           .AsNoTracking()
@@ -112,17 +113,22 @@ namespace ReadYourHeartOut.Controllers
             {
                 return NotFound();
             }
+            // tilpasser hjemmesiden i forhold til services der er assigned til useren.
             PopulateServiceAssignedData(user);
             return View(user);
         }
-
+        // https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/update-related-data?view=aspnetcore-3.0
         private void PopulateServiceAssignedData(User user)
         {
+            // collection af services
             var allServices = _context.Services;
+            // Collection af alle services fra en specifik user
             var userServices = new HashSet<int>(user.ServicesAssignment.Select(u => u.ServiceID));
+            // Liste af viewmodel
             var viewModel = new List<AssignedServiceData>();
             foreach (var service in allServices)
             {
+                // ved match af ID fra all services og userens services, bliver assigned sat som true
                 viewModel.Add(new AssignedServiceData
                 {
                     ServiceID = service.ServiceID,

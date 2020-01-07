@@ -18,6 +18,7 @@ namespace ReadYourHeartOut
         {
             var host = CreateWebHostBuilder(args).Build();
 
+        // Vi har ikke længere brug for "try catch"  pga. DbInitializer.Initialize(context); ikke længere benyttes
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -35,7 +36,7 @@ namespace ReadYourHeartOut
 
             host.Run();
         }
-
+        // tilføjer logging i defaultbuilder, clear default logging for at etablere vores egen logger.
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
             .ConfigureLogging(logging =>

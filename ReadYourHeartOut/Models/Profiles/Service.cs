@@ -13,6 +13,7 @@ namespace ReadYourHeartOut.Models.Profiles
         public double Cost { get; set; }
         [Timestamp]
         public byte[] RowVersion { get; set; }
+        // Navigation Property
         public ICollection<ServiceAssignment> ServiceAssignments { get; set; }
     }
 }

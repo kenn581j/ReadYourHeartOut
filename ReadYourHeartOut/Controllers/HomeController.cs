@@ -11,11 +11,11 @@ namespace ReadYourHeartOut.Controllers
 {
     public class HomeController : Controller
     {
-        //ILogger here...
+        //ILogger here... dependency injection logger
         private readonly ILogger logger;
         public string Message;
-        //private int Count = 0;
-
+  
+        // constructor injection
         public HomeController(ILogger<HomeController> logger)
         {
             this.logger = logger;
@@ -23,7 +23,7 @@ namespace ReadYourHeartOut.Controllers
 
         public IActionResult Index()
         {
-            //Count++;
+            //Count++; 
             //ViewData["Count"] = Count + 1;
             ViewData["Message"] = $"Welcome to our awesome Site, you visited the site at: {DateTime.Now.ToLongTimeString()}";
             Message = $"Welcome to our awesome Site, you visited the site at: {DateTime.Now.ToLongTimeString()}";

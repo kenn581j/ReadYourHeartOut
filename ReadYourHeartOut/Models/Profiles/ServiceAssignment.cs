@@ -10,6 +10,7 @@ namespace ReadYourHeartOut.Models.Profiles
         public int ServiceID { get; set; }
         public int UserID { get; set; }
 
+        //navigation properties
         public Service Service { get; set; }
         public User User { get; set; }
     }

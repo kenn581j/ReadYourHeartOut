@@ -34,7 +34,8 @@ namespace ReadYourHeartOut
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
+            // DbContext hvor IdentityUser tilføjes(bruges ikke i nuværende iteration)
+            // Data gemmes så længe programmet kører (UseInMemoryDatabase)
             services.AddDbContext<UserContext>(options =>
                 options.UseInMemoryDatabase("ReadYourHeartOutDB"));
             services.AddDefaultIdentity<IdentityUser>()
@@ -59,14 +60,14 @@ namespace ReadYourHeartOut
                 app.UseStatusCodePagesWithRedirects("/Error/{0}");
                 app.UseHsts();
             }
-
+            // Vores custom middleware som logger i output, 
             app.UseMiddlewareForTheSakeOfMiddleware();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
+            //Authentication middleware
             app.UseAuthentication();
-
+            // kan tilføje flere routes ved nødvendighed
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
